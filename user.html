@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title> User Dashboard</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #df7b29;
+
+            --primary-light: #fff4ec;
+            --primary-dark: #c7671c;
+
+            --text-dark: #1a1a1a;
+            --text-muted: #64748b;
+
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+
+            --sidebar-text: #475569;
+            --sidebar-hover: #f1f5f9;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            position: fixed;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+
+        .close-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 25px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+        }
+
+        .menu-link i {
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        .menu-link:hover {
+            background-color: var(--sidebar-hover);
+            color: var(--primary-color);
+        }
+
+        .menu-link.active {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .sidebar-bottom {
+            padding: 15px 0 25px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .logout-btn {
+            color: #ef4444;
+        }
+
+        .logout-btn:hover {
+            background-color: #fef2f2;
+            color: #ef4444;
+            border-left: 4px solid #ef4444;
+        }
+
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: 260px;
+            min-height: 100vh;
+            width: calc(100% - 260px);
+        }
+
+        .top-header {
+            background-color: var(--card-bg);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 998;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border: none;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .greeting h1 {
+            font-size: 22px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .welcome-name {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: right;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .user-email {
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: block;
+        }
+
+        .user-avatar img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+        }
+
+
+        .view-section {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.4s ease-in-out;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .view-section.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 19px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            border-left: 4px solid var(--primary-color);
+            padding-left: 12px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .scroll-anim {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .scroll-anim.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+        }
+
+        .equal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .three-col-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(223, 123, 41, 0.08);
+            border-color: var(--primary-light);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .stat-details h3 {
+            font-size: 26px;
+            margin-bottom: 4px;
+            font-weight: 800;
+        }
+
+        .stat-details p {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .content-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.01);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 320px;
+            width: 100%;
+        }
+
+
+        .track-box {
+            display: flex;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .track-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 15px;
+            font-size: 15px;
+            outline: none;
+            width: 100%;
+        }
+
+        .track-box button {
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .track-box button:hover {
+            background: var(--primary-dark);
+        }
+
+        .quick-action-btns {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .quick-btn {
+            flex: 1;
+            min-width: 130px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .quick-btn i {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .quick-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+
+        .tracker-wrapper {
+            padding: 20px 0;
+        }
+
+        .tracker-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .tracker-steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--border-color);
+            z-index: 1;
+            border-radius: 2px;
+        }
+
+        .tracker-steps::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 50%;
+            height: 4px;
+            background: var(--primary-color);
+            z-index: 1;
+            transition: width 1s;
+            border-radius: 2px;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 80px;
+        }
+
+        .step-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px auto;
+            font-size: 14px;
+            transition: 0.3s;
+            border: 3px solid var(--card-bg);
+        }
+
+        .step.completed .step-icon {
+            background: var(--primary-color);
+        }
+
+        .step.active .step-icon {
+            background: var(--primary-color);
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        .step p {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .step.completed p,
+        .step.active p {
+            color: var(--text-dark);
+        }
+
+
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-item label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .filter-item input,
+        .filter-item select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+            font-size: 14px;
+            width: 100%;
+        }
+
+
+        .saved-cards-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .credit-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .credit-card.mastercard {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+        }
+
+        .credit-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .card-type {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: right;
+            font-style: italic;
+            font-weight: 800;
+        }
+
+        .card-number {
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #cbd5e1;
+        }
+
+        .card-details strong {
+            color: #fff;
+            font-size: 15px;
+            display: block;
+            margin-top: 5px;
+        }
+
+
+        .estimator-box {
+            background: var(--primary-light);
+            border: 1px solid rgba(223, 123, 41, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .estimator-box h4 {
+            color: var(--primary-dark);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .estimator-box .price {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .estimator-box p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+
+        .doc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .doc-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .doc-item:hover {
+            border-color: var(--primary-color);
+            background: #f8fafc;
+        }
+
+        .doc-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .doc-info i {
+            font-size: 24px;
+            color: #ef4444;
+        }
+
+        .doc-info h4 {
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .doc-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+
+        .faq-item {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 18px 20px;
+            background: #f8fafc;
+            font-weight: 700;
+            font-size: 15px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-dark);
+        }
+
+        .faq-question:hover {
+            color: var(--primary-color);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: 0.3s ease;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 20px;
+            max-height: 200px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+            color: var(--primary-color);
+        }
+
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14.5px;
+            transition: 0.3s;
+            background: #f8fafc;
+            font-family: inherit;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .checkbox-group label {
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 500;
+
+            line-height: 1.4;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            font-weight: 600;
+        }
+
+        .input-error {
+            border-color: #ef4444 !important;
+            animation: shakeAnim 0.3s;
+        }
+
+        @keyframes shakeAnim {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25%,
+            75% {
+                transform: translateX(-5px);
+            }
+
+            50% {
+                transform: translateX(5px);
+            }
+        }
+
+        .success-msg {
+            color: #166534;
+            background: #dcfce7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+            text-align: center;
+            border: 1px solid #bbf7d0;
+        }
+
+        .main-btn,
+        .action-btn,
+        .secondary-btn {
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .main-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 14px 24px;
+            width: 100%;
+            font-size: 15px;
+            border: none;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .main-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(223, 123, 41, 0.25);
+        }
+
+        .action-btn {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12.5px;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-color);
+            color: #FFF;
+        }
+
+        .secondary-btn {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12.5px;
+        }
+
+        .secondary-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+
+        .timeline {
+            margin-top: 20px;
+            border-left: 2px dashed #cbd5e1;
+            padding-left: 25px;
+            position: relative;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .timeline-item {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -32px;
+            top: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid var(--primary-color);
+        }
+
+        .timeline-item h4 {
+            font-size: 15px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .timeline-item p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .time-badge {
+            font-size: 11px;
+            background: #f1f5f9;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #475569;
+            margin-right: 5px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .alert-box {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            border: 1px solid #fef08a;
+        }
+
+        .alert-warning i {
+            color: #d97706;
+            font-size: 20px;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-danger i {
+            color: #ef4444;
+            font-size: 20px;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert-success i {
+            color: #166534;
+            font-size: 20px;
+        }
+
+        .alert-content h4 {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 3px;
+        }
+
+        .alert-content p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+
+        .eco-card {
+            background: linear-gradient(135deg, #166534, #22c55e);
+            color: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .eco-card i {
+            font-size: 40px;
+            color: #dcfce7;
+        }
+
+        .eco-card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .eco-card p {
+            font-size: 13px;
+            color: #dcfce7;
+        }
+
+
+        .table-container {
+            width: 100%;
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th,
+        td {
+            padding: 16px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 1px 0 var(--border-color);
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status.transit {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .status.delivered,
+        .status.paid,
+        .status.resolved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.pending,
+        .status.unpaid,
+        .status.open {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .status.cancelled,
+        .status.exception {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .menu-toggle,
+            .close-btn {
+                display: block;
+            }
+
+            .two-col-grid,
+            .equal-grid,
+            .three-col-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .top-header {
+                padding: 15px;
+            }
+
+            .view-section {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .greeting h1 {
+                font-size: 18px;
+            }
+
+
+            .content-box {
+                padding: 20px 15px;
+                overflow: scroll;
+            }
+
+            .section-title {
+                font-size: 17px;
+                margin-bottom: 15px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stat-card {
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .stat-details h3 {
+                font-size: 22px;
+            }
+
+
+            .track-box {
+                flex-direction: column;
+                background: transparent;
+                padding: 0;
+                border: none;
+            }
+
+            .track-box input {
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            .track-box button {
+                width: 100%;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .filter-item {
+                width: 100%;
+            }
+
+
+            .quick-action-btns {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .quick-btn {
+                width: 100%;
+                min-width: 100%;
+                padding: 12px;
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 15px;
+            }
+
+            .quick-btn i {
+                font-size: 20px;
+            }
+
+
+            .tracker-steps::before,
+            .tracker-steps::after {
+                top: 12px;
+            }
+
+            .step {
+                width: auto;
+                flex: 1;
+            }
+
+            .step-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+                margin: 0 auto 5px auto;
+            }
+
+            .step p {
+                font-size: 10px;
+            }
+
+
+            .input-group {
+                margin-bottom: 15px;
+            }
+
+            .equal-grid {
+                gap: 15px;
+            }
+
+
+            .credit-card {
+                padding: 20px;
+            }
+
+            .card-number {
+                font-size: 16px;
+            }
+
+
+            .timeline {
+                padding-left: 20px;
+            }
+
+            .timeline-item::before {
+                left: -26px;
+            }
+
+            th,
+            td {
+                padding: 12px 10px;
+                font-size: 13px;
+            }
+
+
+            .eco-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+                padding: 20px;
+            }
+        }
+
+        .logo-img {
+            width: 150px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .logo-da {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .logo-da i {
+            font-size: 28px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-top" style="height: 100%; display: flex; flex-direction: column;">
+                <div class="sidebar-header">
+                    <div class="logo-da">
+                        <img src="./asset/orangelogo.webp" alt="Company Logo" class="logo-img">
+                    </div>
+                    <button class="close-btn" id="closeSidebar"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <ul class="sidebar-menu">
+                    <li><a class="menu-link active" data-target="overview-view">
+                            <i class="fa-solid fa-house"></i> Overview
+                        </a></li>
+                    <li><a class="menu-link" data-target="myshipments-view">
+                            <i class="fa-solid fa-box-open"></i> My Shipments
+                        </a></li>
+                    <li><a class="menu-link" data-target="book-view">
+                            <i class="fa-solid fa-paper-plane"></i> Book Shipment
+                        </a></li>
+                    <li><a class="menu-link" data-target="billing-view">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Billing & Invoices
+                        </a></li>
+                    <li><a class="menu-link" data-target="support-view">
+                            <i class="fa-solid fa-headset"></i> Help & Support
+                        </a></li>
+                </ul>
+
+                <div class="sidebar-bottom">
+                    <a href="login.html" class="menu-link logout-btn">
+                        <i class="fa-solid fa-power-off"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="openSidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="greeting">
+                        <h1 id="page-title">Dashboard <span class="welcome-name">| Overview</span></h1>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="user-role">Premium Member</span>
+                            <span class="user-email">johndoe@example.com</span>
+                        </div>
+                        <div class="user-avatar">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop"
+                                alt="Profile">
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+          
+            <div id="overview-view" class="view-section active">
+
+                <section class="content-box scroll-anim"
+                    style="background: linear-gradient(135deg, #ffffff, #fff4ec); border-color: var(--primary-light);">
+                    <h2 class="section-title" style="border: none; padding: 0; margin-bottom: 10px;">Track your package
+                    </h2>
+                    <p class="text-muted" style="margin-bottom: 20px; font-size: 14px;">Enter your Waybill or Tracking
+                        ID to get live updates.</p>
+
+                    <form id="trackPackageForm">
+                        <div class="track-box">
+
+                            <input type="text" id="trackingInput" placeholder="e.g. STK-8921-X">
+                            <button type="submit" id="trackBtn"><i class="fa-solid fa-magnifying-glass"></i> Track
+                                Now</button>
+                        </div>
+
+                        <div class="error-msg" id="trackingErrorMsg" style="margin-top: 10px; display: none;">Please
+                            enter a valid Tracking ID (min. 5 characters).</div>
+                    </form>
+                </section>
+
+                <section class="stats-grid scroll-anim">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--primary-light); color: var(--primary-color);">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>04</h3>
+                            <p>Active Shipments</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #dcfce7; color: #166534;">
+                            <i class="fa-solid fa-check-double"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>142</h3>
+                            <p>Total Delivered</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fef9c3; color: #854d0e;">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>02</h3>
+                            <p>Unpaid Invoices</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="two-col-grid">
+                    <section class="content-box scroll-anim">
+                        <h2 class="section-title">Quick Actions</h2>
+                        <div class="quick-action-btns">
+                            <a href="404.html" class="quick-btn"
+                                onclick="document.querySelector('[data-target=\'book-view\']').click();">
+                                <i class="fa-solid fa-box-open"></i> Book Shipment
+                            </a>
+                            <a href="404.html" class="quick-btn"
+                                onclick="document.querySelector('[data-target=\'billing-view\']').click();">
+                                <i class="fa-solid fa-credit-card"></i> Pay Invoices
+                            </a>
+                            <a href="404.html" class="quick-btn"
+                                onclick="document.querySelector('[data-target=\'support-view\']').click();">
+                                <i class="fa-solid fa-ticket"></i> Open Ticket
+                            </a>
+                        </div>
+
+                        <div class="alert-box alert-warning" style="margin-top: 25px;">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div class="alert-content">
+                                <h4>Invoice Due Tomorrow</h4>
+                                <p>Invoice #INV-2026-092 for $850.00 is due on Oct 12, 2026.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div style="display: flex; flex-direction: column; gap: 25px;">
+                        <div class="eco-card scroll-anim">
+                            <i class="fa-solid fa-leaf"></i>
+                            <div>
+                                <h3>-450 kg</h3>
+                                <p>Carbon Footprint Offset (YTD)</p>
+                            </div>
+                        </div>
+
+                        <section class="content-box scroll-anim" style="flex: 1;">
+                            <h2 class="section-title" style="margin-bottom: 15px;">Recent Documents</h2>
+                            <div class="doc-list">
+                                <div class="doc-item">
+                                    <div class="doc-info">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                        <div>
+                                            <h4>Waybill #STK-8812</h4>
+                                            <p>1.2 MB &bull; Oct 05</p>
+                                        </div>
+                                    </div>
+                                    <a href="404.html" class="secondary-btn"><i class="fa-solid fa-download"></i></a>
+                                </div>
+                                <div class="doc-item">
+                                    <div class="doc-info">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                        <div>
+                                            <h4>Customs Dec - STK-9901</h4>
+                                            <p>2.4 MB &bull; Oct 10</p>
+                                        </div>
+                                    </div>
+                                    <a href="404.html" class="secondary-btn"><i class="fa-solid fa-download"></i></a>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <section class="content-box scroll-anim">
+                    <h2 class="section-title">Shipment History (Last 6 Months)</h2>
+                    <div class="chart-container">
+                        <canvas id="userShipmentChart"></canvas>
+                    </div>
+                </section>
+            </div>
+
+         
+            <div id="myshipments-view" class="view-section">
+
+                <section class="content-box scroll-anim">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                        <h2 class="section-title" style="margin: 0;">Live Tracking: #STK-9901</h2>
+                        <span class="status transit">In Transit</span>
+                    </div>
+                    <p class="text-muted" style="margin-bottom: 30px; font-size: 14px;"><strong>From:</strong> Los
+                        Angeles, USA &nbsp;&nbsp;|&nbsp;&nbsp; <strong>To:</strong> New York, USA
+                        &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Est. Delivery:</strong> Oct 14, 2026</p>
+
+                    <div class="tracker-wrapper">
+                        <div class="tracker-steps">
+                            <div class="step completed">
+                                <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                                <p>Ordered</p>
+                            </div>
+                            <div class="step completed">
+                                <div class="step-icon"><i class="fa-solid fa-box"></i></div>
+                                <p>Packed</p>
+                            </div>
+                            <div class="step active">
+                                <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                                <p>In Transit</p>
+                            </div>
+                            <div class="step">
+                                <div class="step-icon"><i class="fa-solid fa-house"></i></div>
+                                <p>Delivered</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert-box alert-success" style="margin-top: 20px; margin-bottom: 0;">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <div class="alert-content">
+                            <h4>Current Location</h4>
+                            <p>Package departed from Chicago Sorting Hub. On schedule for delivery.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-box scroll-anim">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                        <h2 class="section-title" style="margin: 0;">All Shipments</h2>
+                        <a href="404.html" class="action-btn"
+                            onclick="document.querySelector('[data-target=\'book-view\']').click();"><i
+                                class="fa-solid fa-plus"></i> New Shipment</a>
+                    </div>
+
+
+                    <div class="filter-bar">
+                        <div class="filter-item">
+                            <label>Search</label>
+                            <input type="text" id="filterSearch" placeholder="Tracking ID or City...">
+
+                            <div class="error-msg" id="searchErrorMsg">Please enter at least 3 characters.</div>
+                        </div>
+                        <div class="filter-item">
+                            <label>Status</label>
+                            <select id="filterStatus">
+                                <option value="all">All Statuses</option>
+                                <option value="transit">In Transit</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="exception">Exception/Delayed</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label>Date Range</label>
+                            <input type="date" id="filterDate">
+                        </div>
+                        <div class="filter-item" style="justify-content: flex-end; position: relative;">
+                            <button id="applyFilterBtn" class="secondary-btn"
+                                style="padding: 10px; border-radius: 8px; width: 100%;">
+                                <i class="fa-solid fa-filter"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="mainFilterError" class="error-msg"
+                        style="margin-bottom: 20px; text-align: right; display: none;">
+                        Please select or enter at least one filter criteria.
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tracking ID</th>
+                                    <th>Route</th>
+                                    <th>Freight Type</th>
+                                    <th>Est. Delivery</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>#STK-9901</strong></td>
+                                    <td>Los Angeles <i class="fa-solid fa-arrow-right text-muted"></i> New York</td>
+                                    <td>Air Express</td>
+                                    <td>Oct 14, 2026</td>
+                                    <td><span class="status transit">In Transit</span></td>
+                                    <td><a href="404.html" class="action-btn">Track</a></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#STK-8812</strong></td>
+                                    <td>Shanghai <i class="fa-solid fa-arrow-right text-muted"></i> London</td>
+                                    <td>Ocean Cargo</td>
+                                    <td>Oct 15, 2026</td>
+                                    <td><span class="status exception">Delayed</span></td>
+                                    <td><a href="404.html" class="action-btn">Track</a></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#STK-7710</strong></td>
+                                    <td>Mumbai <i class="fa-solid fa-arrow-right text-muted"></i> Dubai</td>
+                                    <td>Air Cargo</td>
+                                    <td>Oct 02, 2026</td>
+                                    <td><span class="status delivered">Delivered</span></td>
+                                    <td><a href="404.html" class="secondary-btn">POD</a></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#STK-7705</strong></td>
+                                    <td>Paris <i class="fa-solid fa-arrow-right text-muted"></i> Berlin</td>
+                                    <td>Road Freight</td>
+                                    <td>Sep 24, 2026</td>
+                                    <td><span class="status delivered">Delivered</span></td>
+                                    <td><a href="404.html" class="secondary-btn">POD</a></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>#STK-7650</strong></td>
+                                    <td>Tokyo <i class="fa-solid fa-arrow-right text-muted"></i> Sydney</td>
+                                    <td>Ocean Cargo</td>
+                                    <td>Sep 15, 2026</td>
+                                    <td><span class="status delivered">Delivered</span></td>
+                                    <td><a href="404.html" class="secondary-btn">POD</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+           
+            <div id="book-view" class="view-section">
+
+                <div class="two-col-grid">
+                    <section class="content-box scroll-anim">
+                        <h2 class="section-title">Request New Shipment</h2>
+                        <form id="bookForm" novalidate>
+                            <div id="bookSuccess" class="success-msg">
+                                <i class="fa-solid fa-circle-check"></i> Booking Request Submitted! Waybill sent to
+                                email.
+                            </div>
+
+                            <div class="equal-grid">
+                                <div class="input-group">
+                                    <label>Pickup Address</label>
+                                    <input type="text" id="pickupInput" placeholder="Enter Full Origin Address"
+                                        required>
+                                    <div class="error-msg" id="pickupError">Pickup location is required.</div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Delivery Address</label>
+                                    <input type="text" id="dropInput" placeholder="Enter Full Destination Address"
+                                        required>
+                                    <div class="error-msg" id="dropError">Delivery location is required.</div>
+                                </div>
+                            </div>
+
+                            <div class="equal-grid">
+                                <div class="input-group">
+                                    <label>Preferred Pickup Date</label>
+                                    <input type="date" id="dateInput" required>
+                                    <div class="error-msg" id="dateError">Pickup date is required.</div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Pickup Time Slot</label>
+                                    <select id="timeSelect" required>
+                                        <option value="" selected disabled>Select Time</option>
+                                        <option value="morning">Morning (09:00 AM - 12:00 PM)</option>
+                                        <option value="afternoon">Afternoon (12:00 PM - 04:00 PM)</option>
+                                        <option value="evening">Evening (04:00 PM - 08:00 PM)</option>
+                                    </select>
+                                    <div class="error-msg" id="timeError">Please select a time slot.</div>
+                                </div>
+                            </div>
+
+                            <div class="equal-grid">
+                                <div class="input-group">
+                                    <label>Total Weight (kg)</label>
+                                    <input type="number" id="weightInput" placeholder="e.g. 150" required>
+                                    <div class="error-msg" id="weightError">Valid weight is required.</div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Freight Mode</label>
+                                    <select id="freightSelect" required>
+                                        <option value="" selected disabled>Select Mode</option>
+                                        <option value="air">Air Express (Fastest)</option>
+                                        <option value="ocean">Ocean Freight (Cost Effective)</option>
+                                        <option value="road">Road Transport</option>
+                                    </select>
+                                    <div class="error-msg" id="freightError">Please select a freight mode.</div>
+                                </div>
+                            </div>
+
+                            <div class="equal-grid">
+                                <div class="input-group">
+                                    <label>Dimensions (L x W x H in cm)</label>
+                                    <input type="text" id="dimInput" placeholder="e.g. 50 x 40 x 30" required>
+                                    <div class="error-msg" id="dimError">Dimensions are required.</div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Package Type</label>
+                                    <select id="packSelect" required>
+                                        <option value="box">Standard Box</option>
+                                        <option value="pallet">Wooden Pallet</option>
+                                        <option value="document">Document / Envelope</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Cargo Description</label>
+                                <textarea id="cargoDesc" rows="3" placeholder="Briefly describe the goods..."
+                                    required></textarea>
+                                <div class="error-msg" id="cargoDescError">Cargo description is required.</div>
+                            </div>
+
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="insuranceCheck">
+                                <label for="insuranceCheck">Add Cargo Insurance (+ $25.00)</label>
+                            </div>
+
+                            <button type="submit" class="main-btn">
+                                <i class="fa-solid fa-truck-fast"></i> Confirm & Book
+                            </button>
+                        </form>
+                    </section>
+
+                    <div style="display: flex; flex-direction: column; gap: 25px;">
+
+                        <div class="estimator-box scroll-anim">
+                            <h4>Estimated Freight Cost</h4>
+                            <div class="price">--.--</div>
+                            <p>Fill out weight and freight mode to see live estimates.</p>
+                        </div>
+
+                        <section class="content-box scroll-anim"
+                            style="background: var(--primary-color); color: #fff; border: none; flex: 1;">
+                            <h2 class="section-title" style="color: #fff; border-left-color: #fff;">Need Help Booking?
+                            </h2>
+                            <p style="margin-bottom: 20px; font-size: 15px; line-height: 1.6;">Our logistics experts are
+                                available 24/7 to help you choose the best route and freight type for your cargo.</p>
+
+                            <div
+                                style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                                <h4 style="margin-bottom: 5px; font-size: 14px;"><i class="fa-solid fa-phone"></i> Call
+                                    Support</h4>
+                                <p style="font-size: 16px; font-weight: 700;">+1 (800) 123-4567</p>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px;">
+                                <h4 style="margin-bottom: 5px; font-size: 14px;"><i class="fa-solid fa-envelope"></i>
+                                    Email Support</h4>
+                                <p style="font-size: 15px; font-weight: 600;">support@stackly.com</p>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+           
+            <div id="billing-view" class="view-section">
+
+                <section class="stats-grid scroll-anim">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fef9c3; color: #854d0e;">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>$1,450</h3>
+                            <p>Outstanding Balance</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #dcfce7; color: #166534;">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>$12,800</h3>
+                            <p>Total Paid (YTD)</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="two-col-grid">
+                    <div style="display: flex; flex-direction: column; gap: 25px;">
+
+                        <section class="content-box scroll-anim">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h2 class="section-title" style="margin: 0;">Saved Payment Methods</h2>
+                                <a href="404.html" class="action-btn"><i class="fa-solid fa-plus"></i> Add Card</a>
+                            </div>
+
+                            <div class="saved-cards-grid">
+                                <div class="credit-card">
+                                    <div class="card-type"><i class="fa-brands fa-cc-visa"></i> VISA</div>
+                                    <div class="card-number">**** **** **** 4242</div>
+                                    <div class="card-details">
+                                        <div>Card Holder<strong>John Doe</strong></div>
+                                        <div>Expires<strong>12/28</strong></div>
+                                    </div>
+                                </div>
+                                <div class="credit-card mastercard">
+                                    <div class="card-type"><i class="fa-brands fa-cc-mastercard"></i></div>
+                                    <div class="card-number">**** **** **** 5581</div>
+                                    <div class="card-details">
+                                        <div>Card Holder<strong>John Doe</strong></div>
+                                        <div>Expires<strong>09/27</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="content-box scroll-anim">
+                            <h2 class="section-title">Auto-Pay Settings</h2>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <div>
+                                    <h4 style="font-size: 15px; margin-bottom: 5px; color: var(--text-dark);">Enable
+                                        Auto-Pay</h4>
+                                    <p style="font-size: 13px; color: var(--text-muted);">Pay invoices on due date
+                                        automatically.</p>
+                                </div>
+                                <label
+                                    style="position: relative; display: inline-block; width: 50px; height: 26px; flex-shrink: 0;">
+                                    <input type="checkbox" style="opacity: 0; width: 0; height: 0;" checked>
+                                    <span
+                                        style="position: absolute;  top: 0; left: 0; right: 0; bottom: 0; background-color: var(--primary-color); border-radius: 34px; transition: .4s;">
+                                        <span
+                                            style="position: absolute; content: ''; height: 18px; width: 18px; left: 28px; bottom: 4px; background-color: white; border-radius: 50%; transition: .4s;"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </section>
+
+                    </div>
+
+                    <section class="content-box scroll-anim">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                            <h2 class="section-title" style="margin: 0;">Invoice History</h2>
+                            <a href="404.html" class="secondary-btn"><i class="fa-solid fa-download"></i> All PDF</a>
+                        </div>
+
+                        <div class="table-container" style="max-height: 500px;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Invoice No.</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>INV-2026-092</strong><br><span
+                                                style="font-size: 11px; color: var(--text-muted);">#STK-9901</span></td>
+                                        <td>Oct 10, 2026</td>
+                                        <td>$850.00</td>
+                                        <td><span class="status unpaid">Unpaid</span></td>
+                                        <td><a href="404.html" class="action-btn">Pay</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>INV-2026-088</strong><br><span
+                                                style="font-size: 11px; color: var(--text-muted);">#STK-8812</span></td>
+                                        <td>Oct 05, 2026</td>
+                                        <td>$600.00</td>
+                                        <td><span class="status unpaid">Unpaid</span></td>
+                                        <td><a href="404.html" class="action-btn">Pay</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>INV-2026-075</strong><br><span
+                                                style="font-size: 11px; color: var(--text-muted);">#STK-7710</span></td>
+                                        <td>Sep 28, 2026</td>
+                                        <td>$1,200.00</td>
+                                        <td><span class="status paid">Paid</span></td>
+                                        <td><a href="404.html" class="secondary-btn"><i
+                                                    class="fa-solid fa-file-pdf"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>INV-2026-061</strong><br><span
+                                                style="font-size: 11px; color: var(--text-muted);">#STK-7705</span></td>
+                                        <td>Sep 20, 2026</td>
+                                        <td>$450.00</td>
+                                        <td><span class="status paid">Paid</span></td>
+                                        <td><a href="404.html" class="secondary-btn"><i
+                                                    class="fa-solid fa-file-pdf"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>INV-2026-042</strong><br><span
+                                                style="font-size: 11px; color: var(--text-muted);">#STK-7650</span></td>
+                                        <td>Sep 10, 2026</td>
+                                        <td>$2,100.00</td>
+                                        <td><span class="status paid">Paid</span></td>
+                                        <td><a href="404.html" class="secondary-btn"><i
+                                                    class="fa-solid fa-file-pdf"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+           
+            <div id="support-view" class="view-section">
+
+                <div class="three-col-grid scroll-anim">
+                    <div class="content-box" style="text-align: center; padding: 40px 20px;">
+                        <i class="fa-solid fa-phone-volume"
+                            style="font-size: 40px; color: var(--primary-color); margin-bottom: 15px;"></i>
+                        <h3 style="font-size: 18px; margin-bottom: 10px;">Call Center</h3>
+                        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">Available 24/7 for
+                            urgent shipment queries.</p>
+                        <a href="404.html" class="secondary-btn" style="width: 100%;">+1 (800) 123-4567</a>
+                    </div>
+                    <div class="content-box" style="text-align: center; padding: 40px 20px;">
+                        <i class="fa-solid fa-comments"
+                            style="font-size: 40px; color: var(--primary-color); margin-bottom: 15px;"></i>
+                        <h3 style="font-size: 18px; margin-bottom: 10px;">Live Chat</h3>
+                        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">Chat with our AI bot
+                            or a human agent instantly.</p>
+                        <a href="404.html" class="secondary-btn" style="width: 100%;">Start Chat</a>
+                    </div>
+                    <div class="content-box" style="text-align: center; padding: 40px 20px;">
+                        <i class="fa-solid fa-book-open-reader"
+                            style="font-size: 40px; color: var(--primary-color); margin-bottom: 15px;"></i>
+                        <h3 style="font-size: 18px; margin-bottom: 10px;">Resource Center</h3>
+                        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">Guides on customs,
+                            packaging, and policies.</p>
+                        <a href="404.html" class="secondary-btn" style="width: 100%;">Browse Guides</a>
+                    </div>
+                </div>
+
+                <div class="two-col-grid">
+                    <section class="content-box scroll-anim">
+                        <h2 class="section-title">Open a Support Ticket</h2>
+                        <p class="text-muted" style="margin-bottom: 20px; font-size: 14px;">Describe your issue below
+                            and our team will get back to you within 24 hours.</p>
+
+                        <form id="supportForm" novalidate>
+                            <div id="supportSuccess" class="success-msg">
+                                <i class="fa-solid fa-circle-check"></i> Ticket Submitted! Ticket ID: #TK-8890
+                            </div>
+
+                            <div class="input-group">
+                                <label>Subject / Issue Type</label>
+                                <select id="issueSelect" required>
+                                    <option value="" selected disabled>Select Issue Type</option>
+                                    <option value="delay">Shipment Delayed</option>
+                                    <option value="damage">Damaged Cargo</option>
+                                    <option value="billing">Billing / Invoice Issue</option>
+                                    <option value="other">Other Inquiry</option>
+                                </select>
+                                <div class="error-msg" id="issueError">Please select an issue type.</div>
+                            </div>
+
+                            <div class="input-group">
+                                <label>Tracking ID / Invoice No. (Optional)</label>
+                                <input type="text" placeholder="e.g. STK-8921">
+                            </div>
+
+                            <div class="input-group">
+                                <label>Message Details</label>
+                                <textarea id="supportMsg" rows="4" placeholder="Explain your issue in detail..."
+                                    required></textarea>
+                                <div class="error-msg" id="supportMsgError">Please provide more details.</div>
+                            </div>
+
+                            <button type="submit" class="main-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Submit Ticket
+                            </button>
+                        </form>
+                    </section>
+
+                    <div style="display: flex; flex-direction: column; gap: 25px; overflow: hidden;">
+                        <section class="content-box scroll-anim">
+                            <h2 class="section-title">My Open Tickets</h2>
+                            <div class="table-container" style="max-height: 250px;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Ticket ID</th>
+                                            <th>Subject</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>#TK-8842</strong><br><span
+                                                    style="font-size: 11px; color: var(--text-muted);">Oct 08</span>
+                                            </td>
+                                            <td>Customs Delay STK-8812</td>
+                                            <td><span class="status open">Open</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>#TK-8710</strong><br><span
+                                                    style="font-size: 11px; color: var(--text-muted);">Sep 20</span>
+                                            </td>
+                                            <td>Address Change Request</td>
+                                            <td><span class="status resolved">Resolved</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <section class="content-box scroll-anim" style="flex: 1;">
+                            <h2 class="section-title">Frequently Asked Questions</h2>
+
+                            <div class="faq-accordion">
+                                <div class="faq-item">
+                                    <div class="faq-question">How do I track my shipment? <i
+                                            class="fa-solid fa-chevron-down"></i></div>
+                                    <div class="faq-answer">You can easily track your shipment by entering the Tracking
+                                        ID provided in your confirmation email into the 'Track Package' box on the
+                                        Overview page.</div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question">What if my cargo is damaged? <i
+                                            class="fa-solid fa-chevron-down"></i></div>
+                                    <div class="faq-answer">If you opted for Cargo Insurance during booking, open a
+                                        support ticket under the 'Damaged Cargo' category. Please attach photos for a
+                                        quick claim process.</div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question">Can I change the delivery address? <i
+                                            class="fa-solid fa-chevron-down"></i></div>
+                                    <div class="faq-answer">Yes, before the shipment reaches the destination country.
+                                        Additional charges may apply based on the new distance.</div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+
+        const emailValue = localStorage.getItem("UserMail");
+        const email = emailValue || "johndoe@example.com";
+        const extractedName = email.split("@")[0];
+        const formattedName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
+
+        document.querySelector(".user-email").textContent = email;
+        const welcomeEl = document.querySelector(".welcome-name");
+        if (welcomeEl) { welcomeEl.textContent = `| Welcome, ${formattedName} 👋`; }
+
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const openSidebarBtn = document.getElementById('openSidebar');
+        const closeSidebarBtn = document.getElementById('closeSidebar');
+
+        function openSidebar() { sidebar.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow = 'auto'; }
+
+        openSidebarBtn.addEventListener('click', openSidebar);
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+
+        const menuLinks = document.querySelectorAll('.sidebar-menu .menu-link');
+        const views = document.querySelectorAll('.view-section');
+        const pageTitle = document.getElementById('page-title');
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                if (this.classList.contains('active')) return;
+
+                menuLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                views.forEach(v => v.classList.remove('active'));
+
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+
+
+                let titleText = this.innerText.trim();
+                pageTitle.innerHTML = `${titleText}`;
+
+                if (window.innerWidth <= 992) { closeSidebar(); }
+                triggerAnimations();
+            });
+        });
+
+
+        const ctx = document.getElementById('userShipmentChart').getContext('2d');
+        const userShipmentChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                datasets: [{
+                    label: 'Shipments Booked',
+                    data: [5, 8, 4, 12, 9, 6],
+                    backgroundColor: '#df7b29',
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { stepSize: 2 } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) { entry.target.classList.add('show'); }
+            });
+        }, { threshold: 0.1 });
+
+        function triggerAnimations() {
+            const animElements = document.querySelectorAll('.scroll-anim');
+            animElements.forEach(el => {
+                el.classList.remove('show');
+                observer.observe(el);
+            });
+        }
+        triggerAnimations();
+
+
+        const weightInput = document.getElementById('weightInput');
+        const freightSelect = document.getElementById('freightSelect');
+        const priceDisplay = document.querySelector('.estimator-box .price');
+
+        function updateEstimate() {
+            const weight = parseFloat(weightInput.value);
+            const mode = freightSelect.value;
+
+            if (!weight || isNaN(weight) || !mode) {
+                priceDisplay.innerHTML = '--.--';
+                return;
+            }
+
+            let ratePerKg = 0;
+            let baseFee = 50;
+
+            if (mode === 'air') ratePerKg = 8.50;
+            else if (mode === 'ocean') ratePerKg = 2.20;
+            else if (mode === 'road') ratePerKg = 4.00;
+
+            const total = baseFee + (weight * ratePerKg);
+            priceDisplay.innerHTML = `$${total.toFixed(2)}`;
+        }
+
+        if (weightInput) weightInput.addEventListener('input', updateEstimate);
+        if (freightSelect) freightSelect.addEventListener('change', updateEstimate);
+
+
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const questionBtn = item.querySelector('.faq-question');
+            questionBtn.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                faqItems.forEach(otherItem => otherItem.classList.remove('active'));
+                if (!isActive) { item.classList.add('active'); }
+            });
+        });
+
+
+        function validateInput(inputEl, errorEl) {
+            if (inputEl.value.trim() === '') {
+                inputEl.classList.add('input-error');
+                errorEl.style.display = 'block';
+                return false;
+            } else {
+                inputEl.classList.remove('input-error');
+                errorEl.style.display = 'none';
+                return true;
+            }
+        }
+
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('input', function () {
+                this.classList.remove('input-error');
+                const errorMsg = this.nextElementSibling;
+                if (errorMsg && errorMsg.classList.contains('error-msg')) {
+                    errorMsg.style.display = 'none';
+                }
+            });
+        });
+
+
+        document.getElementById('bookForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let isValid = true;
+            isValid &= validateInput(document.getElementById('pickupInput'), document.getElementById('pickupError'));
+            isValid &= validateInput(document.getElementById('dropInput'), document.getElementById('dropError'));
+            isValid &= validateInput(document.getElementById('dateInput'), document.getElementById('dateError'));
+            isValid &= validateInput(document.getElementById('timeSelect'), document.getElementById('timeError'));
+            isValid &= validateInput(document.getElementById('weightInput'), document.getElementById('weightError'));
+            isValid &= validateInput(document.getElementById('freightSelect'), document.getElementById('freightError'));
+            isValid &= validateInput(document.getElementById('dimInput'), document.getElementById('dimError'));
+            isValid &= validateInput(document.getElementById('cargoDesc'), document.getElementById('cargoDescError'));
+
+            if (isValid) {
+                const successMsg = document.getElementById('bookSuccess');
+                window.location.href = '404.html'
+                successMsg.style.display = 'block';
+                this.reset();
+                setTimeout(() => {
+                    this.reset();
+                    successMsg.style.display = 'none';
+                    priceDisplay.innerHTML = '--.--';
+                }, 4000);
+            }
+        });
+
+
+        document.getElementById('supportForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let isValid = true;
+            isValid &= validateInput(document.getElementById('issueSelect'), document.getElementById('issueError'));
+            isValid &= validateInput(document.getElementById('supportMsg'), document.getElementById('supportMsgError'));
+
+            if (isValid) {
+                const successMsg = document.getElementById('supportSuccess');
+                window.location.href = '404.html'
+                successMsg.style.display = 'block';
+                this.reset();
+                setTimeout(() => { successMsg.style.display = 'none'; }, 4000);
+            }
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const applyFilterBtn = document.getElementById('applyFilterBtn');
+            const filterSearch = document.getElementById('filterSearch');
+            const filterStatus = document.getElementById('filterStatus');
+            const filterDate = document.getElementById('filterDate');
+
+            const searchErrorMsg = document.getElementById('searchErrorMsg');
+            const mainFilterError = document.getElementById('mainFilterError');
+
+
+            [filterSearch, filterStatus, filterDate].forEach(element => {
+                element.addEventListener('input', function () {
+                    filterSearch.classList.remove('input-error');
+                    searchErrorMsg.style.display = 'none';
+                    mainFilterError.style.display = 'none';
+                });
+            });
+
+
+            applyFilterBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                let isValid = true;
+                const searchValue = filterSearch.value.trim();
+                const statusValue = filterStatus.value;
+                const dateValue = filterDate.value;
+
+
+                filterSearch.classList.remove('input-error', 'shake-error');
+                searchErrorMsg.style.display = 'none';
+                mainFilterError.style.display = 'none';
+
+
+                if (searchValue === '' && statusValue === 'all' && dateValue === '') {
+                    mainFilterError.style.display = 'block';
+                    isValid = false;
+                }
+
+
+                if (searchValue !== '' && searchValue.length < 3) {
+                    filterSearch.classList.add('input-error');
+                    searchErrorMsg.style.display = 'block';
+
+
+                    void filterSearch.offsetWidth;
+                    filterSearch.classList.add('shake-error');
+
+                    isValid = false;
+                }
+
+
+                if (isValid) {
+
+                    const originalText = applyFilterBtn.innerHTML;
+                    applyFilterBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Applying...';
+                    applyFilterBtn.style.pointerEvents = 'none';
+
+
+                    setTimeout(() => {
+                        applyFilterBtn.innerHTML = originalText;
+                        applyFilterBtn.style.pointerEvents = 'auto';
+
+                        window.location.href = '404.html'
+                    }, 1000);
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const trackPackageForm = document.getElementById('trackPackageForm');
+            const trackingInput = document.getElementById('trackingInput');
+            const trackingErrorMsg = document.getElementById('trackingErrorMsg');
+            const trackBtn = document.getElementById('trackBtn');
+
+
+            if (trackingInput) {
+                trackingInput.addEventListener('input', function () {
+                    trackingInput.classList.remove('input-error', 'shake-error');
+                    trackingErrorMsg.style.display = 'none';
+                });
+            }
+
+
+            if (trackPackageForm) {
+                trackPackageForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const trackingValue = trackingInput.value.trim();
+                    let isValid = true;
+
+
+                    trackingInput.classList.remove('input-error', 'shake-error');
+                    trackingErrorMsg.style.display = 'none';
+
+
+                    if (trackingValue === '' || trackingValue.length < 5) {
+                        trackingInput.classList.add('input-error');
+                        trackingErrorMsg.style.display = 'block';
+
+
+                        void trackingInput.offsetWidth;
+                        trackingInput.classList.add('shake-error');
+
+                        isValid = false;
+                    }
+
+                    if (isValid) {
+
+                        const originalText = trackBtn.innerHTML;
+                        trackBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Searching...';
+                        trackBtn.style.pointerEvents = 'none';
+                        window.location.href = '404.html'
+                        this.reset();
+
+                        setTimeout(() => {
+                            trackBtn.innerHTML = originalText;
+                            trackBtn.style.pointerEvents = 'auto';
+
+
+                        }, 1200);
+                    }
+                });
+            }
+
+        });
+    </script>
+</body>
+
+</html>
