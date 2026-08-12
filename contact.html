@@ -473,7 +473,6 @@
             const formMessage = document.getElementById('formMessage');
             const submitBtn = document.getElementById('submitBtn');
 
-
             const nameInput = document.getElementById('userName');
             const emailInput = document.getElementById('userEmail');
             const phoneInput = document.getElementById('userPhone');
@@ -483,6 +482,17 @@
             const messageInput = document.getElementById('userMessage');
             const privacyInput = document.getElementById('privacyPolicy');
             const privacyLabel = document.getElementById('privacyLabel');
+
+
+            nameInput.addEventListener('input', function () {
+                this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+            });
+
+
+            phoneInput.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
 
 
             const allInputs = [
@@ -501,7 +511,6 @@
                 privacyLabel.classList.remove('checkbox-error');
                 if (formMessage.classList.contains('error')) formMessage.style.display = 'none';
             });
-
 
             contactForm.addEventListener('submit', function (e) {
                 e.preventDefault();
@@ -524,7 +533,7 @@
                 }
 
 
-                const phoneRegex = /^[0-9\-\+\s\(\)]{7,15}$/;
+                const phoneRegex = /^[0-9]{7,15}$/;
                 if (!phoneRegex.test(phoneInput.value.trim())) {
                     triggerError(phoneInput);
                     isValid = false;
@@ -548,6 +557,7 @@
                     isValid = false;
                 }
 
+
                 if (messageInput.value.trim() === '') {
                     triggerError(messageInput);
                     isValid = false;
@@ -558,7 +568,6 @@
                     privacyLabel.classList.add('checkbox-error');
                     isValid = false;
                 }
-
 
                 if (!isValid) {
                     formMessage.innerText = 'Please fill in the highlighted fields correctly.';
@@ -578,7 +587,6 @@
 
                 window.location.href = '404.html';
 
-                contactForm.reset();
 
                 setTimeout(() => {
                     contactForm.reset();
