@@ -1383,7 +1383,7 @@
                 </div>
             </header>
 
-          
+
             <div id="overview-view" class="view-section active">
 
                 <section class="content-box scroll-anim"
@@ -1440,16 +1440,13 @@
                     <section class="content-box scroll-anim">
                         <h2 class="section-title">Quick Actions</h2>
                         <div class="quick-action-btns">
-                            <a href="404.html" class="quick-btn"
-                                onclick="document.querySelector('[data-target=\'book-view\']').click();">
+                            <a href="404.html" class="quick-btn" >
                                 <i class="fa-solid fa-box-open"></i> Book Shipment
                             </a>
-                            <a href="404.html" class="quick-btn"
-                                onclick="document.querySelector('[data-target=\'billing-view\']').click();">
+                            <a href="404.html" class="quick-btn" >
                                 <i class="fa-solid fa-credit-card"></i> Pay Invoices
                             </a>
-                            <a href="404.html" class="quick-btn"
-                                onclick="document.querySelector('[data-target=\'support-view\']').click();">
+                            <a href="404.html" class="quick-btn" >
                                 <i class="fa-solid fa-ticket"></i> Open Ticket
                             </a>
                         </div>
@@ -1508,7 +1505,7 @@
                 </section>
             </div>
 
-         
+
             <div id="myshipments-view" class="view-section">
 
                 <section class="content-box scroll-anim">
@@ -1652,7 +1649,7 @@
                 </section>
             </div>
 
-           
+
             <div id="book-view" class="view-section">
 
                 <div class="two-col-grid">
@@ -1780,7 +1777,7 @@
                 </div>
             </div>
 
-           
+
             <div id="billing-view" class="view-section">
 
                 <section class="stats-grid scroll-anim">
@@ -1837,20 +1834,29 @@
                         <section class="content-box scroll-anim">
                             <h2 class="section-title">Auto-Pay Settings</h2>
                             <div
-                                style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid var(--border-color, #e2e8f0);">
                                 <div>
-                                    <h4 style="font-size: 15px; margin-bottom: 5px; color: var(--text-dark);">Enable
-                                        Auto-Pay</h4>
-                                    <p style="font-size: 13px; color: var(--text-muted);">Pay invoices on due date
-                                        automatically.</p>
+                                    <h4 style="font-size: 15px; margin-bottom: 5px; color: var(--text-dark, #1e293b);">
+                                        Enable Auto-Pay</h4>
+                                    <p style="font-size: 13px; color: var(--text-muted, #64748b);">Pay invoices on due
+                                        date automatically.</p>
                                 </div>
+
                                 <label
-                                    style="position: relative; display: inline-block; width: 50px; height: 26px; flex-shrink: 0;">
-                                    <input type="checkbox" style="opacity: 0; width: 0; height: 0;" checked>
-                                    <span
-                                        style="position: absolute;  top: 0; left: 0; right: 0; bottom: 0; background-color: var(--primary-color); border-radius: 34px; transition: .4s;">
-                                        <span
+                                    style="position: relative; display: inline-block; width: 50px; height: 26px; flex-shrink: 0; cursor: pointer;">
+
+
+                                    <input type="checkbox" id="autoPayToggle" style="opacity: 0; width: 0; height: 0;"
+                                        checked>
+
+
+                                    <span id="toggleBg"
+                                        style="position: absolute;  top: 0; left: 0; right: 0; bottom: 0; background-color: var(--primary-color, #2e7d32); border-radius: 34px; transition: .4s;">
+
+
+                                        <span id="toggleKnob"
                                             style="position: absolute; content: ''; height: 18px; width: 18px; left: 28px; bottom: 4px; background-color: white; border-radius: 50%; transition: .4s;"></span>
+
                                     </span>
                                 </label>
                             </div>
@@ -1930,7 +1936,7 @@
                 </div>
             </div>
 
-           
+
             <div id="support-view" class="view-section">
 
                 <div class="three-col-grid scroll-anim">
@@ -2383,6 +2389,50 @@
                 });
             }
 
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+            const autoPayToggle = document.getElementById('autoPayToggle');
+            const toggleBg = document.getElementById('toggleBg');
+            const toggleKnob = document.getElementById('toggleKnob');
+
+
+            if (!autoPayToggle || !toggleBg || !toggleKnob) return;
+
+
+            function updateToggle() {
+                if (autoPayToggle.checked) {
+
+                    toggleBg.style.backgroundColor = 'var(--primary-color, #2e7d32)';
+                    toggleKnob.style.left = '28px';
+                } else {
+
+                    toggleBg.style.backgroundColor = '#cbd5e1';
+                    toggleKnob.style.left = '4px';
+                }
+            }
+
+
+            updateToggle();
+
+
+            autoPayToggle.addEventListener('change', function () {
+
+
+                updateToggle();
+
+
+                if (this.checked) {
+                    console.log("Auto-Pay is now ON");
+
+                } else {
+                    console.log("Auto-Pay is now OFF");
+
+                }
+            });
         });
     </script>
 </body>

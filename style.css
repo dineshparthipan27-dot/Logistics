@@ -1074,6 +1074,7 @@ body {
 
     .df-image-content {
         height: 320px;
+        display: none;
     }
 
     .df-img-main {
