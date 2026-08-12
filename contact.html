@@ -467,135 +467,135 @@
     </script>
 
     <script>
-       document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
 
-    const contactForm = document.getElementById('premiumContactForm');
-    const formMessage = document.getElementById('formMessage');
-    const submitBtn = document.getElementById('submitBtn');
+            const contactForm = document.getElementById('premiumContactForm');
+            const formMessage = document.getElementById('formMessage');
+            const submitBtn = document.getElementById('submitBtn');
 
-    
-    const nameInput = document.getElementById('userName');
-    const emailInput = document.getElementById('userEmail');
-    const phoneInput = document.getElementById('userPhone');
-    const businessTypeInput = document.getElementById('businessType');
-    const companyInput = document.getElementById('companyName');
-    const locationInput = document.getElementById('location');
-    const messageInput = document.getElementById('userMessage');
-    const privacyInput = document.getElementById('privacyPolicy');
-    const privacyLabel = document.getElementById('privacyLabel');
 
-    
-    const allInputs = [
-        nameInput, emailInput, phoneInput, 
-        businessTypeInput, companyInput, locationInput, messageInput
-    ];
+            const nameInput = document.getElementById('userName');
+            const emailInput = document.getElementById('userEmail');
+            const phoneInput = document.getElementById('userPhone');
+            const businessTypeInput = document.getElementById('businessType');
+            const companyInput = document.getElementById('companyName');
+            const locationInput = document.getElementById('location');
+            const messageInput = document.getElementById('userMessage');
+            const privacyInput = document.getElementById('privacyPolicy');
+            const privacyLabel = document.getElementById('privacyLabel');
 
-    allInputs.forEach(input => {
-        input.addEventListener('input', function () {
-            this.classList.remove('input-error', 'shake-error');
-            if (formMessage.classList.contains('error')) formMessage.style.display = 'none';
+
+            const allInputs = [
+                nameInput, emailInput, phoneInput,
+                businessTypeInput, companyInput, locationInput, messageInput
+            ];
+
+            allInputs.forEach(input => {
+                input.addEventListener('input', function () {
+                    this.classList.remove('input-error', 'shake-error');
+                    if (formMessage.classList.contains('error')) formMessage.style.display = 'none';
+                });
+            });
+
+            privacyInput.addEventListener('change', function () {
+                privacyLabel.classList.remove('checkbox-error');
+                if (formMessage.classList.contains('error')) formMessage.style.display = 'none';
+            });
+
+
+            contactForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                let isValid = true;
+                formMessage.className = 'form-msg';
+                formMessage.style.display = 'none';
+
+
+                if (nameInput.value.trim() === '') {
+                    triggerError(nameInput);
+                    isValid = false;
+                }
+
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailInput.value.trim())) {
+                    triggerError(emailInput);
+                    isValid = false;
+                }
+
+
+                const phoneRegex = /^[0-9\-\+\s\(\)]{7,15}$/;
+                if (!phoneRegex.test(phoneInput.value.trim())) {
+                    triggerError(phoneInput);
+                    isValid = false;
+                }
+
+
+                if (businessTypeInput.value.trim() === '') {
+                    triggerError(businessTypeInput);
+                    isValid = false;
+                }
+
+
+                if (companyInput.value.trim() === '') {
+                    triggerError(companyInput);
+                    isValid = false;
+                }
+
+
+                if (locationInput.value.trim() === '') {
+                    triggerError(locationInput);
+                    isValid = false;
+                }
+
+                if (messageInput.value.trim() === '') {
+                    triggerError(messageInput);
+                    isValid = false;
+                }
+
+
+                if (!privacyInput.checked) {
+                    privacyLabel.classList.add('checkbox-error');
+                    isValid = false;
+                }
+
+
+                if (!isValid) {
+                    formMessage.innerText = 'Please fill in the highlighted fields correctly.';
+                    formMessage.classList.add('error');
+                    formMessage.style.display = 'block';
+                    return false;
+                }
+
+
+                formMessage.innerText = 'Thank you! Your message has been sent successfully.';
+                formMessage.classList.add('success');
+                formMessage.style.display = 'block';
+
+                submitBtn.innerText = "Sent!";
+                submitBtn.style.backgroundColor = "#2e7d32";
+
+
+                window.location.href = '404.html';
+
+                contactForm.reset();
+
+                setTimeout(() => {
+                    contactForm.reset();
+                    formMessage.style.display = 'none';
+                    formMessage.classList.remove('success');
+                    submitBtn.innerText = "Submit";
+                    submitBtn.style.backgroundColor = "";
+                }, 3000);
+
+            });
+
+            function triggerError(element) {
+                element.classList.remove('shake-error');
+                void element.offsetWidth;
+                element.classList.add('input-error', 'shake-error');
+            }
         });
-    });
-
-    privacyInput.addEventListener('change', function () {
-        privacyLabel.classList.remove('checkbox-error');
-        if (formMessage.classList.contains('error')) formMessage.style.display = 'none';
-    });
-
-
-    contactForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        let isValid = true;
-        formMessage.className = 'form-msg';
-        formMessage.style.display = 'none';
-
-       
-        if (nameInput.value.trim() === '') {
-            triggerError(nameInput);
-            isValid = false;
-        }
-
-       
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(emailInput.value.trim())) {
-            triggerError(emailInput);
-            isValid = false;
-        }
-
-       
-        const phoneRegex = /^[0-9\-\+\s\(\)]{7,15}$/;
-        if (!phoneRegex.test(phoneInput.value.trim())) {
-            triggerError(phoneInput);
-            isValid = false;
-        }
-
-        
-        if (businessTypeInput.value.trim() === '') {
-            triggerError(businessTypeInput);
-            isValid = false;
-        }
-
-        
-        if (companyInput.value.trim() === '') {
-            triggerError(companyInput);
-            isValid = false;
-        }
-
-      
-        if (locationInput.value.trim() === '') {
-            triggerError(locationInput);
-            isValid = false;
-        }
-
-        if (messageInput.value.trim() === '') {
-            triggerError(messageInput);
-            isValid = false;
-        }
-
-       
-        if (!privacyInput.checked) {
-            privacyLabel.classList.add('checkbox-error');
-            isValid = false;
-        }
-
-       
-        if (!isValid) {
-            formMessage.innerText = 'Please fill in the highlighted fields correctly.';
-            formMessage.classList.add('error');
-            formMessage.style.display = 'block';
-            return false;
-        }
-
-        
-        formMessage.innerText = 'Thank you! Your message has been sent successfully.';
-        formMessage.classList.add('success');
-        formMessage.style.display = 'block';
-        
-        submitBtn.innerText = "Sent!";
-        submitBtn.style.backgroundColor = "#2e7d32";
-        
-        
-        window.location.href = '404.html';
-
-        contactForm.reset();
-
-        setTimeout(() => {
-            contactForm.reset();
-            formMessage.style.display = 'none';
-            formMessage.classList.remove('success');
-            submitBtn.innerText = "Submit";
-            submitBtn.style.backgroundColor = "";
-        }, 3000);
-
-    });
-
-    function triggerError(element) {
-        element.classList.remove('shake-error');
-        void element.offsetWidth; 
-        element.classList.add('input-error', 'shake-error');
-    }
-});
     </script>
 
     <script>

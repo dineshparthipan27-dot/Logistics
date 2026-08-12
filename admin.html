@@ -10,10 +10,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-         
         :root {
             --primary-color: #df7b29;
-             
+
             --primary-light: #fff4ec;
             --primary-dark: #c7671c;
 
@@ -36,7 +35,7 @@
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-         
+
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -67,7 +66,7 @@
             width: 100%;
         }
 
-         
+
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -169,7 +168,7 @@
             border-left: 4px solid #ef4444;
         }
 
-         
+
         .main-content {
             flex: 1;
             display: flex;
@@ -247,7 +246,7 @@
             color: var(--primary-color);
         }
 
-         
+
         .view-section {
             display: none;
             padding: 30px;
@@ -292,7 +291,7 @@
             transform: translateY(0);
         }
 
-         
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -366,7 +365,7 @@
             width: 100%;
         }
 
-         
+
         .input-group {
             margin-bottom: 18px;
         }
@@ -478,7 +477,7 @@
             color: #FFF;
         }
 
-         
+
         .timeline {
             margin-top: 20px;
             border-left: 2px solid var(--border-color);
@@ -606,7 +605,7 @@
             border-radius: 10px;
         }
 
-         
+
         .table-container {
             width: 100%;
             max-height: 350px;
@@ -670,7 +669,7 @@
             color: #991b1b;
         }
 
-         
+
         .mini-profile {
             display: flex;
             align-items: center;
@@ -710,7 +709,7 @@
             color: var(--text-muted);
         }
 
-         
+
         @media (max-width: 992px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -794,10 +793,10 @@
 
 <body>
     <div class="dashboard-container">
-         
+
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-         
+
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-top" style="height: 100%; display: flex; flex-direction: column;">
                 <div class="sidebar-header">
@@ -830,7 +829,7 @@
             </div>
         </aside>
 
-         
+
         <main class="main-content">
             <header class="top-header">
                 <div class="header-left">
@@ -854,7 +853,7 @@
                 </div>
             </header>
 
-           
+
             <div id="overview-view" class="view-section active">
                 <section class="stats-grid scroll-anim">
                     <div class="stat-card">
@@ -996,7 +995,7 @@
                 </section>
             </div>
 
-         
+
             <div id="shipments-view" class="view-section">
 
                 <section class="stats-grid scroll-anim">
@@ -1039,7 +1038,7 @@
                 </section>
 
                 <div class="equal-grid">
-                     
+
                     <section class="content-box scroll-anim">
                         <h2 class="section-title">Create New Shipment</h2>
                         <form id="shipmentForm" novalidate>
@@ -1111,7 +1110,7 @@
                     </section>
                 </div>
 
-                 
+
                 <section class="content-box scroll-anim">
                     <h2 class="section-title">Live Tracking Pipeline</h2>
                     <div class="table-container" style="max-height: 400px;">
@@ -1189,7 +1188,7 @@
                 </section>
             </div>
 
-           
+
             <div id="fleet-view" class="view-section">
 
                 <section class="stats-grid scroll-anim">
@@ -1299,7 +1298,7 @@
                     </section>
                 </div>
 
-                 
+
                 <section class="content-box scroll-anim">
                     <h2 class="section-title">Vehicle Maintenance Schedule</h2>
                     <div class="table-container" style="max-height: 300px;">
@@ -1348,7 +1347,7 @@
                 </section>
             </div>
 
-           
+
             <div id="warehouse-view" class="view-section">
 
                 <section class="stats-grid scroll-anim">
@@ -1391,7 +1390,7 @@
                 </section>
 
                 <div class="two-col-grid">
-                     
+
                     <section class="content-box scroll-anim">
                         <h2 class="section-title">Log New Inventory</h2>
                         <form id="inventoryForm" novalidate>
@@ -1428,7 +1427,7 @@
                         </form>
                     </section>
 
-                     
+
                     <div style="display: flex; flex-direction: column; gap: 25px;">
 
                         <section class="content-box scroll-anim">
@@ -1474,7 +1473,7 @@
                     </div>
                 </div>
 
-                 
+
                 <div class="two-col-grid">
                     <section class="content-box scroll-anim">
                         <h2 class="section-title">Low Stock Alerts</h2>
@@ -1537,7 +1536,7 @@
     </div>
 
     <script>
- 
+
         const emailValue = localStorage.getItem("UserMail");
         const email = emailValue || "admin@stackly.com";
         const extractedName = email.split("@")[0];
@@ -1559,7 +1558,7 @@
         closeSidebarBtn.addEventListener('click', closeSidebar);
         overlay.addEventListener('click', closeSidebar);
 
- 
+
         const menuLinks = document.querySelectorAll('.sidebar-menu .menu-link');
         const views = document.querySelectorAll('.view-section');
         const pageTitle = document.getElementById('page-title');
@@ -1583,7 +1582,7 @@
             });
         });
 
- 
+
         const ctx = document.getElementById('freightChart').getContext('2d');
         const freightChart = new Chart(ctx, {
             type: 'line',
@@ -1613,7 +1612,7 @@
             }
         });
 
- 
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) { entry.target.classList.add('show'); }
@@ -1629,7 +1628,7 @@
         }
         triggerAnimations();
 
- 
+
         function validateInput(inputEl, errorEl) {
             if (inputEl.value.trim() === '') {
                 inputEl.classList.add('input-error');
@@ -1652,7 +1651,7 @@
             });
         });
 
- 
+
         document.getElementById('dispatchForm').addEventListener('submit', function (e) {
             e.preventDefault();
             let isValid = true;
@@ -1663,12 +1662,12 @@
             if (isValid) {
                 const successMsg = document.getElementById('formSuccess');
                 window.location.href = '404.html'
-                successMsg.style.display = 'block';this.reset();
+                successMsg.style.display = 'block'; this.reset();
                 setTimeout(() => { successMsg.style.display = 'none'; }, 3000);
             }
         });
 
- 
+
         document.getElementById('shipmentForm').addEventListener('submit', function (e) {
             e.preventDefault();
             let isValid = true;
@@ -1679,12 +1678,12 @@
             if (isValid) {
                 const successMsg = document.getElementById('shipmentSuccess');
                 window.location.href = '404.html'
-                successMsg.style.display = 'block';this.reset();
-                setTimeout(() => {  successMsg.style.display = 'none'; }, 3000);
+                successMsg.style.display = 'block'; this.reset();
+                setTimeout(() => { successMsg.style.display = 'none'; }, 3000);
             }
         });
 
- 
+
         document.getElementById('inventoryForm').addEventListener('submit', function (e) {
             e.preventDefault();
             let isValid = true;
@@ -1695,8 +1694,8 @@
             if (isValid) {
                 const successMsg = document.getElementById('inventorySuccess');
                 window.location.href = '404.html'
-                successMsg.style.display = 'block';this.reset();
-                setTimeout(() => {  successMsg.style.display = 'none'; }, 3000);
+                successMsg.style.display = 'block'; this.reset();
+                setTimeout(() => { successMsg.style.display = 'none'; }, 3000);
             }
         });
     </script>

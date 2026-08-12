@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,15 @@
     <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="Logistics.css">
 </head>
+
 <body>
- <nav class="navbar">
-      
-     <a href="index.html" class="logo-container">
+    <nav class="navbar">
+
+        <a href="index.html" class="logo-container">
             <img src="./asset/orangelogo.webp" alt="Company Logo" class="logo-img">
         </a>
 
-         
+
         <div class="nav-collapse">
             <ul class="nav-menu">
                 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
@@ -30,194 +32,196 @@
             </div>
         </div>
 
-         
+
         <div class="hamburger">
             <span class="bar"></span>
             <span class="bar"></span>
             <span class="bar"></span>
         </div>
     </nav>
-    
-     
-<section class="login-section">
-    <div class="container">
-        
-        <div class="login-card-wrapper">
-            
-             
-            <div class="login-image-col" data-aos="fade-right" data-aos-duration="1000">
-                <div class="image-bg-zoom"></div>
-                <div class="image-overlay"></div>
-                
-                <div class="image-text-content">
-                    <h3>Welcome back! please<br>login</h3>
-                    <p>Please enter your details and password to<br>access your account and continue enjoying our services.</p>
+
+
+    <section class="login-section">
+        <div class="container">
+
+            <div class="login-card-wrapper">
+
+
+                <div class="login-image-col" data-aos="fade-right" data-aos-duration="1000">
+                    <div class="image-bg-zoom"></div>
+                    <div class="image-overlay"></div>
+
+                    <div class="image-text-content">
+                        <h3>Welcome back! please<br>login</h3>
+                        <p>Please enter your details and password to<br>access your account and continue enjoying our
+                            services.</p>
+                    </div>
                 </div>
-            </div>
 
-             
-            <div class="login-form-col" data-aos="fade-left" data-aos-duration="1000">
-                <div class="form-inner">
-                    <h2 class="login-title">Login</h2>
-                    
-                    <form id="loginForm" novalidate>
-                        
-                         
-                        <div class="input-group">
-                            <label for="userRole">Select Role</label>
-                            <div class="select-wrapper">
-                                <select id="userRole" required>
-                                    <option value="" disabled selected>Choose your role...</option>
-                                    <option value="admin">Admin (Dashboard)</option>
-                                    <option value="user">User (Dashboard)</option>
-                                </select>
+
+                <div class="login-form-col" data-aos="fade-left" data-aos-duration="1000">
+                    <div class="form-inner">
+                        <h2 class="login-title">Login</h2>
+
+                        <form id="loginForm" novalidate>
+
+
+                            <div class="input-group">
+                                <label for="userRole">Select Role</label>
+                                <div class="select-wrapper">
+                                    <select id="userRole" required>
+                                        <option value="" disabled selected>Choose your role...</option>
+                                        <option value="admin">Admin (Dashboard)</option>
+                                        <option value="user">User (Dashboard)</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                         
-                        <div class="input-group">
-                            <label for="loginName">Name</label>
-                            <input type="text" id="loginName" placeholder="Enter your name" required>
-                        </div>
 
-                         
-                        <div class="input-group">
-                            <label for="loginEmail">Email</label>
-                            <input type="email" id="loginEmail" placeholder="Enter your email" required>
-                        </div>
-                        
-                         
-                        <div class="input-group">
-                            <label for="loginPassword">Password</label>
-                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                        </div>
-                        
-                         
-                        <div class="form-options-row">
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="rememberMe">
-                                <label for="rememberMe">Remember me</label>
+                            <div class="input-group">
+                                <label for="loginName">Name</label>
+                                <input type="text" id="loginName" placeholder="Enter your name" required>
                             </div>
-                            <a href="404.html" class="forgot-link">Forgot password ?</a>
-                        </div>
-                        
-                         
-                        <div id="loginMsg" class="form-msg"></div>
 
-                         
-                        <div class="btn-wrap">
-                            <button type="submit" id="loginBtn" class="btn-login-orange">Login</button>
-                        </div>
 
-                         
-                        <p class="signup-redirect-text">
-                            I don't have account <a href="signup.html">Signup</a>
-                        </p>
+                            <div class="input-group">
+                                <label for="loginEmail">Email</label>
+                                <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                            </div>
 
-                    </form>
+
+                            <div class="input-group">
+                                <label for="loginPassword">Password</label>
+                                <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                            </div>
+
+
+                            <div class="form-options-row">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="rememberMe">
+                                    <label for="rememberMe">Remember me</label>
+                                </div>
+                                <a href="404.html" class="forgot-link">Forgot password ?</a>
+                            </div>
+
+
+                            <div id="loginMsg" class="form-msg"></div>
+
+
+                            <div class="btn-wrap">
+                                <button type="submit" id="loginBtn" class="btn-login-orange">Login</button>
+                            </div>
+
+
+                            <p class="signup-redirect-text">
+                                I don't have account <a href="signup.html">Signup</a>
+                            </p>
+
+                        </form>
+                    </div>
                 </div>
+
             </div>
 
         </div>
-        
-    </div>
-</section>
+    </section>
 
- <script src="main.js"></script> 
+    <script src="main.js"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    
-    const loginForm = document.getElementById('loginForm');
-    const formMsg = document.getElementById('loginMsg');
-    const loginBtn = document.getElementById('loginBtn');
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
- 
-    const roleInput = document.getElementById('userRole');
-    const nameInput = document.getElementById('loginName');
-    const emailInput = document.getElementById('loginEmail');
-    const passInput = document.getElementById('loginPassword');
+            const loginForm = document.getElementById('loginForm');
+            const formMsg = document.getElementById('loginMsg');
+            const loginBtn = document.getElementById('loginBtn');
 
- 
-    const requiredInputs = [roleInput, nameInput, emailInput, passInput];
-    
-    requiredInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            this.classList.remove('input-error', 'shake-error');
-            if(formMsg.classList.contains('error')) formMsg.style.display = 'none';
-        });
-    });
 
- 
-    loginForm.addEventListener('submit', function(e) {
-        e.preventDefault(); 
-        
-        let isValid = true;
-        formMsg.className = 'form-msg';
-        formMsg.style.display = 'none';
+            const roleInput = document.getElementById('userRole');
+            const nameInput = document.getElementById('loginName');
+            const emailInput = document.getElementById('loginEmail');
+            const passInput = document.getElementById('loginPassword');
 
- 
-        if (roleInput.value === '') {
-            triggerError(roleInput);
-            isValid = false;
-        }
 
- 
-        if (nameInput.value.trim() === '') {
-            triggerError(nameInput);
-            isValid = false;
-        }
+            const requiredInputs = [roleInput, nameInput, emailInput, passInput];
 
- 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(emailInput.value.trim())) {
-            triggerError(emailInput);
-            isValid = false;
-        }
+            requiredInputs.forEach(input => {
+                input.addEventListener('input', function () {
+                    this.classList.remove('input-error', 'shake-error');
+                    if (formMsg.classList.contains('error')) formMsg.style.display = 'none';
+                });
+            });
 
- 
-        if (passInput.value.trim().length === 0) {
-            triggerError(passInput);
-            isValid = false;
-        }
 
- 
-        if (!isValid) {
-            formMsg.innerText = 'Please fill all fields correctly.';
-            formMsg.classList.add('error');
-            formMsg.style.display = 'block';
-            return false;
-        }
+            loginForm.addEventListener('submit', function (e) {
+                e.preventDefault();
 
- 
-        const selectedRole = roleInput.value;
-        formMsg.innerText = `Login successful! Redirecting to ${selectedRole} dashboard...`;
-        formMsg.classList.add('success');
-        formMsg.style.display = 'block';
-        
-        loginBtn.innerText = "Authenticating...";
-        loginBtn.style.backgroundColor = "#2e7d32"; 
-        loginBtn.style.pointerEvents = "none"; 
-        localStorage.setItem("UserMail", emailInput.value);
- 
-        setTimeout(() => {
-            if (selectedRole === 'admin') {
-                window.location.href = 'admin.html'; 
-            } else {
-                window.location.href = 'user.html'; 
+                let isValid = true;
+                formMsg.className = 'form-msg';
+                formMsg.style.display = 'none';
+
+
+                if (roleInput.value === '') {
+                    triggerError(roleInput);
+                    isValid = false;
+                }
+
+
+                if (nameInput.value.trim() === '') {
+                    triggerError(nameInput);
+                    isValid = false;
+                }
+
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailInput.value.trim())) {
+                    triggerError(emailInput);
+                    isValid = false;
+                }
+
+
+                if (passInput.value.trim().length === 0) {
+                    triggerError(passInput);
+                    isValid = false;
+                }
+
+
+                if (!isValid) {
+                    formMsg.innerText = 'Please fill all fields correctly.';
+                    formMsg.classList.add('error');
+                    formMsg.style.display = 'block';
+                    return false;
+                }
+
+
+                const selectedRole = roleInput.value;
+                formMsg.innerText = `Login successful! Redirecting to ${selectedRole} dashboard...`;
+                formMsg.classList.add('success');
+                formMsg.style.display = 'block';
+
+                loginBtn.innerText = "Authenticating...";
+                loginBtn.style.backgroundColor = "#2e7d32";
+                loginBtn.style.pointerEvents = "none";
+                localStorage.setItem("UserMail", emailInput.value);
+
+                setTimeout(() => {
+                    if (selectedRole === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'user.html';
+                    }
+                }, 500);
+
+            });
+
+            function triggerError(element) {
+                element.classList.remove('shake-error');
+                void element.offsetWidth;
+                element.classList.add('input-error', 'shake-error');
             }
-        }, 500);
-
-    });
-
-    function triggerError(element) {
-        element.classList.remove('shake-error');
-        void element.offsetWidth; 
-        element.classList.add('input-error', 'shake-error');
-    }
-});
-</script>
+        });
+    </script>
 
 
 </body>
+
 </html>
